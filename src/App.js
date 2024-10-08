@@ -1,51 +1,99 @@
-import React, { useState } from 'react';
-import template from "./performance-problem-template.png";
-import data_management from "./data_management.svg";
-import { Select } from "antd"
+import React, {useCallback, useRef, useState} from 'react';
+import InfiniteScroll from 'react-infinite-scroller';
+
+// const App = () => {
+//     const [items, setItems] = useState([]);
+//
+//     const fetchItems = async (page) => {
+//         setTimeout(() => {
+//             setItems(items => {
+//                 const newItems = [...items];
+//                 for (let i = (page - 1) * 100; i < page * 100; i++) {
+//                     newItems.push(i);
+//                 }
+//                 return newItems;
+//             })
+//         }, 500)
+//     }
+//
+//     const scrollParent = useRef(null);
+//
+//     return (
+//         <div style={{height: "600px", overflow: "auto"}} ref={scrollParent}>
+//             <div>
+//                 <InfiniteScroll
+//                     loadMore={fetchItems}
+//                     hasMore={items.length < 500}
+//                     loader={<div key="loader" className="loader">Loading ...</div>}
+//                     useWindow={false}
+//                     getScrollParent={() => scrollParent.current}
+//                 >
+//                     <ul>
+//                         {items.map(item => (
+//                             <li style={{width: "300px"}} key={item}>
+//                                 {item}
+//                             </li>
+//                         ))}
+//                     </ul>
+//                 </InfiniteScroll>
+//             </div>
+//         </div>
+//     );
+// };
+
+
 
 const App = () => {
-    const [value, setValue] = useState("normal");
+    const [items, setItems] = useState([]);
+
+    const scrollParent = useRef(null);
+
+    const fetchItems = async () => {
+        setTimeout(() => {
+            setItems(items => {
+                const newItems = [...items];
+                for (let i = items.length; i < items.length + 100; i++) {
+                    newItems.push(i);
+                }
+                return newItems;
+            })
+        }, 500)
+    }
+
+    const loader = (
+        <div key="loader" className="loader">
+            Loading ...
+        </div>
+    );
 
     return (
-        <div style={{background: "red"}}>
-            <h1 style={{
-                position: "absolute",
-                top: "100px",
-                background: "blue",
-                color: "orange",
-                mixBlendMode: value
-            }}
-            >
-                一级标题 一级标题 一级标题 一级标题 一级标题 一级标题 一级标题
-            </h1>
-            <img src={template} width={500}/>
-            <img src={data_management}/>
+        <div style={{height: "700px", overflow: "auto"}} ref={scrollParent}>
+            <div style={{display: "flex", flexWrap: "wrap"}}>
+                <div style={{width: "300px"}}>1</div>
+                <div style={{width: "300px"}}>2</div>
+                <div style={{width: "300px"}}>3</div>
+                <div style={{width: "300px"}}>4</div>
+                <div style={{width: "300px"}}>5</div>
+                <div style={{width: "300px"}}>6</div>
+            </div>
+            <h1>无限滚动</h1>
             <div>
-                <Select
-                    style={{
-                        width: 200
-                    }}
-                    onChange={v => setValue(v)}
-                    value={value}
-                    options={[
-                        {value: "normal", label: "normal 正常"},
-                        {value: "multiply", label: "multiply 正片叠底"},
-                        {value: "screen", label: "screen 滤色"},
-                        {value: "overlay", label: "overlay 叠加"},
-                        {value: "darken", label: "darken 变暗"},
-                        {value: "lighten", label: "lighten 变亮"},
-                        {value: "color-dodge", label: "color-dodge 颜色减淡"},
-                        {value: "color-burn", label: "color-burn 颜色加深"},
-                        {value: "hard-light", label: "hard-light 强光"},
-                        {value: "soft-light", label: "soft-light 柔光"},
-                        {value: "difference", label: "difference 差值"},
-                        {value: "exclusion", label: "exclusion 排除"},
-                        {value: "hue", label: "hue 色相"},
-                        {value: "saturation", label: "saturation 饱和度"},
-                        {value: "color", label: "color 颜色"},
-                        {value: "luminosity", label: "luminosity 亮度"},
-                    ]}
-                />
+                <InfiniteScroll
+                    loadMore={fetchItems}
+                    hasMore={items.length < 500}
+                    loader={loader}
+                    useWindow={false}
+                    getScrollParent={() => scrollParent.current}
+                    //element={'ul'}
+                >
+                    <div style={{display: "flex", flexWrap: "wrap"}}>
+                        {items.map(item => (
+                            <div style={{width: "300px"}} key={item}>
+                                {item}
+                            </div>
+                        ))}
+                    </div>
+                </InfiniteScroll>
             </div>
         </div>
     );
